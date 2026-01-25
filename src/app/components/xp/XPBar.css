@@ -1,0 +1,28 @@
+.xp-bar-container{
+    text-align: center;
+    padding: 3px 12px 3px 12px;
+}
+
+.xp-text{
+    font-size: 0.55em;
+    margin-bottom: 0.4em;
+}
+
+.xp-bar-bg {
+    width: 50vw;
+    height: 2vh;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.xp-bar-fill {
+    height: 100%;
+    background: #FFD700;
+    width: '50%';
+}
+
+.xp-level {
+    margin-top: 0.2em;
+    font-size: 0.8em;
+}
