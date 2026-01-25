@@ -33,29 +33,38 @@ export default function SettingsMenu({
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
       {/* Gear Button */}
-      <button
-        onClick={toggleMenu}
-        style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          padding: 6,
-        }}
-      >
-        <Settings
-          size={24}
-          className={
-            spinning === "cw"
-              ? "spin-cw"
-              : spinning === "ccw"
-              ? "spin-ccw"
-              : ""
-          }
-        />
-      </button>
+    <button
+    onClick={toggleMenu}
+    style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: open
+        ? "rgba(0, 0, 0, 0.65)"
+        : "rgba(0, 0, 0, 0.35)",
+        color: open ? "#FFD700" : "#ffffff",
+        border: "1px solid rgba(255, 255, 255, 0.4)",
+        borderRadius: 8,
+        padding: "6px 6px",
+        cursor: "pointer",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+        transition: "all 0.2s ease-in-out",
+    }}
+    >
+    <Settings
+        size={30}
+        className={
+        spinning === "cw"
+            ? "spin-cw"
+            : spinning === "ccw"
+            ? "spin-ccw"
+            : ""
+        }
+    />
+    </button>
 
-      {/* Animated Dropdown */}
-      {renderMenu && (
+    {/* Animated Dropdown */}
+    {renderMenu && (
         <div
           className={open ? "menu-slide-down" : "menu-slide-up"}
           style={{

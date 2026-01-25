@@ -28,12 +28,13 @@ export default function Background({ location, style, className, alt }: Backgrou
 	const key = (location || "").toLowerCase().trim().replace(/\s+/g, "");
 	const filename = FILE_MAP[key] ?? FILE_MAP[location.toLowerCase().trim()] ?? "forest.gif";
 
-	const src = new URL(`../../assets/backgrounds/${filename}`, import.meta.url).href;
+	const src = new URL(`../../../assets/backgrounds/${filename}`, import.meta.url).href;
 
 	return (
 		<img
 			src={src}
 			alt={alt ?? location}
+			draggable={false}
 			className={className}
 			style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", ...style }}
 		/>
