@@ -13,7 +13,7 @@ const FILE_MAP: Record<string, string> = {
 	cliffs: "cliffs.gif",
 	flowers: "flowers.gif",
 	forest: "forest.gif",
-	graveyard: "graveyaard.gif",
+	graveyard: "graveyard.gif",
 	gym: "gym.jpg",
 	hills: "hills.gif",
 	lava: "lava.gif",
