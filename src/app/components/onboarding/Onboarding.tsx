@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
 import "./Onboarding.css";
 import Dialog from "../dialog/Dialog";
 
-export default function Onboarding({ user }: { user: User }) {
+export default function Onboarding({ }: { }) {
   const dialogLines = [
     "Welcome to the world of PokéCare!",
     "My name is Professor Oak.",
