@@ -96,7 +96,7 @@ export default function App() {
   if (pokemon?.species === "shinx") {
     return (
       <div className="app-container">
-        <Onboarding user={user} />
+        <Onboarding/>
       </div>
     );
   }
