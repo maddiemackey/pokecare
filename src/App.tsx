@@ -10,6 +10,7 @@ import PokemonSprite from "./app/components/sprite";
 import SettingsMenu from "./app/components/settings/SettingsMenu";
 import XPBar from "./app/components/xp/XPBar";
 import UserMenu from "./app/components/user/UserMenu";
+import Onboarding from "./app/components/onboarding/Onboarding";
 
 type Pokemon = {
   id: string;
@@ -92,6 +93,14 @@ export default function App() {
     </div>
   );
 
+  if (pokemon?.species === "shinx") {
+    return (
+      <div className="app-container">
+        <Onboarding user={user} />
+      </div>
+    );
+  }
+
   return (
     <div className="app-container">
       {/* Fullscreen background */}
@@ -99,7 +108,7 @@ export default function App() {
 
         {/* Sprite always centered */}
         <div className="sprite-container">
-          <PokemonSprite name="shinx" style={{ width: 150, height: 150 }} />
+          <PokemonSprite name={pokemon?.species} style={{ width: 150, height: 150 }} />
         </div>
 
       <div className="content-container">

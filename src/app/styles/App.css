@@ -20,6 +20,14 @@
   margin: 1%;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.fade-in {
+    animation: fadeIn 2s ease-in;
+}
+
 /* Gear spin */
 .spin-cw {
   animation: spinClockwise 0.25s ease-in-out;

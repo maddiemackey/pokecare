@@ -1,0 +1,43 @@
+.dialog-box {
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+    color:#000;
+    position: relative;
+    width: 50vw;
+    text-align: left;
+}
+
+.outer-dialog-box {
+    padding: 5px;
+    border: 2px solid #000;
+    background-color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Little down triangle */
+.continue-indicator {
+    margin-left: 16px;
+    animation: blink 1.5s steps(2, start) infinite;
+}
+
+/* Invisible layout placeholder */
+.dialog-ghost {
+    visibility: hidden;
+    white-space: pre-wrap;
+}
+
+/* Visible typing text overlays ghost */
+.dialog-visible {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    white-space: pre-wrap;
+}
+
+@keyframes blink {
+    to { visibility: hidden; }
+}

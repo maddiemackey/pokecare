@@ -4,7 +4,7 @@ export default function PokemonSprite({
   name,
   style,
 }: {
-  name: string;
+  name: string | undefined;
   style?: CSSProperties;
 }) {
   const [sprite, setSprite] = useState(null);
