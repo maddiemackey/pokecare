@@ -22,6 +22,7 @@ export default function App() {
     setUserPokemon(prev => [...prev, pokemon]);
   };
   const activePokemon = userPokemon[0] ?? null;
+  const [jiggling, setJiggling] = useState(false);
 
   useEffect(() => {
     // Check existing session
@@ -64,37 +65,42 @@ export default function App() {
 }, [user]);
 
 
-useEffect(() => {
-  if (!user) return;
+  useEffect(() => {
+    if (!user) return;
 
-  const channel = supabase
-    .channel("pokemon-updates")
-    .on(
-      "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "user_pokemon",
-        filter: `user_id=eq.${user.id}`,
-      },
-      payload => {
-        const newPokemon = payload.new as Pokemon;
+    const channel = supabase
+      .channel("pokemon-updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "user_pokemon",
+          filter: `user_id=eq.${user.id}`,
+        },
+        payload => {
+          const newPokemon = payload.new as Pokemon;
 
-        setUserPokemon(prev => {
-          const exists = prev.find(p => p.id === newPokemon.id);
-          if (exists) {
-            return prev.map(p => (p.id === newPokemon.id ? newPokemon : p));
-          }
-          return [...prev, newPokemon];
-        });
-      }
-    )
-    .subscribe();
+          setUserPokemon(prev => {
+            const exists = prev.find(p => p.id === newPokemon.id);
+            if (exists) {
+              return prev.map(p => (p.id === newPokemon.id ? newPokemon : p));
+            }
+            return [...prev, newPokemon];
+          });
+        }
+      )
+      .subscribe();
 
-  return () => {
-    supabase.removeChannel(channel);
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
+  const handleSpriteClick = () => {
+    setJiggling(true);
+    setTimeout(() => setJiggling(false), 3000); // remove after 3s
   };
-}, [user]);
 
 
   if (!user) return (
@@ -125,8 +131,17 @@ useEffect(() => {
       <Background location="hills" className="background" />
 
         {/* Sprite always centered */}
-        <div className="sprite-container">
-          <PokemonSprite name={activePokemon?.species} style={{ width: 150, height: 150, imageRendering: "pixelated"  }} />
+        <div
+          className={`sprite-container ${jiggling ? "jiggle" : ""}`}
+          onClick={() => {
+            setJiggling(true);
+            setTimeout(() => setJiggling(false), 1200);
+          }}
+        >
+          <PokemonSprite
+            name={activePokemon?.species}
+            style={{ width: 150, height: 150, imageRendering: "pixelated" }}
+          />
         </div>
 
       <div className="content-container">
