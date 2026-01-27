@@ -10,27 +10,25 @@ type Pokemon = {
 export default function XPBar({ pokemon }: { pokemon: Pokemon | null }) {
   if (!pokemon) return <p className="xp-text">Loading XP...</p>;
 
-  const getLevelFromXP = (xp: number) => {
+  const xpForNextLevel = (level: number) => level ** 3 + 6; 
+
+  const getXPIntoLevel = (xp: number) => {
     let level = 1;
-    while ((level + 1) ** 3 <= xp) level++;
-    return level;
+    while (xp >= xpForNextLevel(level)) {
+      xp -= xpForNextLevel(level);
+      level++;
+    }
+    return { level, xpIntoLevel: xp, xpNeeded: xpForNextLevel(level) };
   };
 
-  const xpForLevel = (level: number) => level ** 3;
+  const { level, xpIntoLevel, xpNeeded } = getXPIntoLevel(pokemon.current_xp);
 
-  const level = getLevelFromXP(pokemon.current_xp);
-  const xpCurrentLevel = xpForLevel(level);
-  const xpNextLevel = xpForLevel(level + 1);
-
-  const xpIntoLevel = pokemon.current_xp - xpCurrentLevel;
-  const xpNeededThisLevel = xpNextLevel - xpCurrentLevel;
-
-  const xpPercent = Math.min((xpIntoLevel / xpNeededThisLevel) * 100, 100);
+  const xpPercent = (xpIntoLevel / xpNeeded) * 100;
 
   return (
     <div className="xp-bar-container">
       <p className="xp-text">
-        {xpIntoLevel} / {xpNeededThisLevel} XP
+        {xpIntoLevel} / {xpNeeded} XP
       </p>
 
       <div className="xp-bar-bg">

@@ -5,6 +5,8 @@ import { supabase } from "./supabase/supabaseClient";
 import UserAuthentification from "./app/components/authentification/userAuthentification";
 import type { Session, User } from "@supabase/supabase-js";
 
+import type { Pokemon } from "./app/types/Pokemon";
+
 import Background from "./app/components/background";
 import PokemonSprite from "./app/components/sprite";
 import SettingsMenu from "./app/components/settings/SettingsMenu";
@@ -12,17 +14,14 @@ import XPBar from "./app/components/xp/XPBar";
 import UserMenu from "./app/components/user/UserMenu";
 import Onboarding from "./app/components/onboarding/Onboarding";
 
-type Pokemon = {
-  id: string;
-  nickname: string;
-  species: string;
-  current_xp: number;
-};
-
-
 export default function App() {
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [pokemon, setPokemon] = useState<Pokemon | null>(null);
+  const [userPokemon, setUserPokemon] = useState<Pokemon[]>([]);
+  const addPokemonToState = (pokemon: Pokemon) => {
+    setUserPokemon(prev => [...prev, pokemon]);
+  };
+  const activePokemon = userPokemon[0] ?? null;
 
   useEffect(() => {
     // Check existing session
@@ -41,51 +40,62 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!user) {
-      setPokemon(null);
-      return;
+  if (!user) {
+    setUserPokemon([]);
+    return;
+  }
+
+  const fetchPokemon = async () => {
+    const { data, error } = await supabase
+      .from("user_pokemon")
+      .select("id, nickname, species, current_xp")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching Pokémon:", error);
+    } else {
+      setUserPokemon(data ?? []);
+      setLoading(false);
     }
+  };
 
-    const fetchPokemon = async () => {
-      const { data, error } = await supabase
-        .from("user_pokemon")
-        .select("id, nickname, species, current_xp")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: true })
-        .limit(1)
-        .maybeSingle();
+  fetchPokemon();
+}, [user]);
 
-      if (error) {
-        console.error("Error fetching Pokémon:", error);
-      } else {
-        setPokemon(data);
+
+useEffect(() => {
+  if (!user) return;
+
+  const channel = supabase
+    .channel("pokemon-updates")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "user_pokemon",
+        filter: `user_id=eq.${user.id}`,
+      },
+      payload => {
+        const newPokemon = payload.new as Pokemon;
+
+        setUserPokemon(prev => {
+          const exists = prev.find(p => p.id === newPokemon.id);
+          if (exists) {
+            return prev.map(p => (p.id === newPokemon.id ? newPokemon : p));
+          }
+          return [...prev, newPokemon];
+        });
       }
-    };
+    )
+    .subscribe();
 
-    fetchPokemon();
-  }, [user]);
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [user]);
 
-  useEffect(() => {
-    if (!user) return;
-
-    const channel = supabase
-      .channel("pokemon-updates")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "user_pokemon",
-          filter: `user_id=eq.${user.id}`,
-        },
-        payload => setPokemon(payload.new as Pokemon)
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user]);
 
   if (!user) return (
     <div className="app-container">
@@ -93,10 +103,18 @@ export default function App() {
     </div>
   );
 
-  if (pokemon?.species === "shinx") {
+  if (loading) {
     return (
       <div className="app-container">
-        <Onboarding/>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  else if (userPokemon.length === 0) {
+    return (
+      <div className="app-container">
+        <Onboarding user={user} onPokemonAdded={addPokemonToState} />
       </div>
     );
   }
@@ -108,7 +126,7 @@ export default function App() {
 
         {/* Sprite always centered */}
         <div className="sprite-container">
-          <PokemonSprite name={pokemon?.species} style={{ width: 150, height: 150 }} />
+          <PokemonSprite name={activePokemon?.species} style={{ width: 150, height: 150, imageRendering: "pixelated"  }} />
         </div>
 
       <div className="content-container">
@@ -118,9 +136,9 @@ export default function App() {
             <UserMenu user={user}/>
           </div>
           <div className="xp-bar-wrapper">
-            <XPBar pokemon={pokemon} />
+            <XPBar pokemon={activePokemon} />
             <div className="pokemon-nickname">
-              <p>{pokemon?.nickname}</p>
+              <p>{activePokemon?.nickname}</p>
               </div>
           </div>
           <div className="settings-wrapper">

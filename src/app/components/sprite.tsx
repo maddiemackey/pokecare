@@ -3,11 +3,15 @@ import { useEffect, useState, type CSSProperties } from "react";
 export default function PokemonSprite({
   name,
   style,
+  width = "120px",
+  height = "120px",
 }: {
   name: string | undefined;
   style?: CSSProperties;
+  width?: string;
+  height?: string;
 }) {
-  const [sprite, setSprite] = useState(null);
+  const [sprite, setSprite] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -23,26 +27,30 @@ export default function PokemonSprite({
         return res.json();
       })
       .then((data) => {
-        // Try to get animated sprite for Black & White
         const animated =
-          data.sprites.versions?.["generation-v"]?.["black-white"]?.animated?.front_default;
-
-        if (animated) {
-          setSprite(animated);
-        } else {
-          // fallback to default front sprite
-          setSprite(data.sprites.front_default);
-        }
+          data.sprites.versions?.["generation-v"]?.["black-white"]?.animated
+            ?.front_default;
+        setSprite(animated ?? data.sprites.front_default);
       })
-      .catch((err) => {
-        console.error(err);
-        setError(true);
-      })
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, [name]);
 
   if (loading) return <p>Loading...</p>;
   if (error || !sprite) return <p>Could not load Pokémon.</p>;
 
-  return <img src={sprite} alt={name} style={style} />;
+  return (
+    <img
+      src={sprite}
+      alt={name}
+      style={{
+        width,
+        height,
+        imageRendering: "pixelated",
+        objectFit: "contain",
+        display: "block",
+        ...style,
+      }}
+    />
+  );
 }

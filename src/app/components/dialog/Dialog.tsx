@@ -45,14 +45,9 @@ export default function Dialog({ message, onComplete }: DialogProps) {
   return (
     <div className="outer-dialog-box" onClick={handleAdvance}>
       <div className="dialog-box">
-        {/* Invisible full message to lock layout */}
         <span className="dialog-ghost">{message}</span>
-
-        {/* Visible animated text */}
-        <span className="dialog-visible">
-          {visibleText}
-          {isDone && <span className="continue-indicator">▼</span>}
-        </span>
+        <span className="dialog-visible">{visibleText}</span>
+        {isDone && <span className="continue-indicator">▼</span>}
       </div>
     </div>
   );
