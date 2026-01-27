@@ -96,13 +96,7 @@ export default function App() {
       supabase.removeChannel(channel);
     };
   }, [user]);
-
-  const handleSpriteClick = () => {
-    setJiggling(true);
-    setTimeout(() => setJiggling(false), 3000); // remove after 3s
-  };
-
-
+  
   if (!user) return (
     <div className="app-container">
       <UserAuthentification onLogin={setUser} />
