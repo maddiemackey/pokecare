@@ -1,0 +1,21 @@
+/* Sprite centered */
+.sprite-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+/* Add this class when animating */
+.sprite-container.jiggle {
+  animation: jiggle-bounce 0.6s ease-in-out 5; /* 5 × 0.6s = 3s */
+}
+
+@keyframes jiggle-bounce {
+  0%   { transform: translate(-50%, -50%) translateY(0); }
+  25%  { transform: translate(-50%, -50%) translateY(-12px); }
+  50%  { transform: translate(-50%, -50%) translateY(0); }
+  75%  { transform: translate(-50%, -50%) translateY(-6px); }
+  100% { transform: translate(-50%, -50%) translateY(0); }
+}

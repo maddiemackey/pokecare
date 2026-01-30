@@ -8,11 +8,11 @@ import type { Session, User } from "@supabase/supabase-js";
 import type { Pokemon } from "./app/types/Pokemon";
 
 import Background from "./app/components/background";
-import PokemonSprite from "./app/components/sprite";
 import SettingsMenu from "./app/components/settings/SettingsMenu";
 import XPBar from "./app/components/xp/XPBar";
 import UserMenu from "./app/components/user/UserMenu";
 import Onboarding from "./app/components/onboarding/Onboarding";
+import InteractiveSprite from "./app/components/sprite/InteractiveSprite";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,6 @@ export default function App() {
     setUserPokemon(prev => [...prev, pokemon]);
   };
   const activePokemon = userPokemon[0] ?? null;
-  const [jiggling, setJiggling] = useState(false);
 
   useEffect(() => {
     // Check existing session
@@ -124,19 +123,8 @@ export default function App() {
       {/* Fullscreen background */}
       <Background location="hills" className="background" />
 
-        {/* Sprite always centered */}
-        <div
-          className={`sprite-container ${jiggling ? "jiggle" : ""}`}
-          onClick={() => {
-            setJiggling(true);
-            setTimeout(() => setJiggling(false), 1200);
-          }}
-        >
-          <PokemonSprite
-            name={activePokemon?.species}
-            style={{ width: 150, height: 150, imageRendering: "pixelated" }}
-          />
-        </div>
+      {/* Sprite */}
+      <InteractiveSprite pokemon={activePokemon} />
 
       <div className="content-container">
         {/* Heading container: XP + Settings */}

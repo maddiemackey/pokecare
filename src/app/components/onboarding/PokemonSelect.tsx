@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import PokemonSprite from "../sprite";
+import PokemonSprite from "../sprite/SpriteImage";
 import "./PokemonSelect.css";
 import { supabase } from "../../../supabase/supabaseClient";
 import type { User } from "@supabase/supabase-js";
