@@ -3,4 +3,6 @@ export type Pokemon = {
   nickname: string;
   species: string;
   current_xp: number;
+  sprite?: string | null;
+  cry?: string | null;
 };

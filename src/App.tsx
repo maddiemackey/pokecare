@@ -13,6 +13,7 @@ import XPBar from "./app/components/xp/XPBar";
 import UserMenu from "./app/components/user/UserMenu";
 import Onboarding from "./app/components/onboarding/Onboarding";
 import InteractiveSprite from "./app/components/sprite/InteractiveSprite";
+import { getPokemonData } from "./app/Pokemon/PokemonAPI";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -55,13 +56,43 @@ export default function App() {
     if (error) {
       console.error("Error fetching Pokémon:", error);
     } else {
-      setUserPokemon(data ?? []);
+      setUserPokemon(prev => {
+        const map = new Map(prev.map(p => [p.id, p]));
+
+        (data ?? []).forEach(dbPoke => {
+          const existing = map.get(dbPoke.id);
+          map.set(dbPoke.id, { ...dbPoke, ...existing }); // keep sprite/cry if present
+        });
+
+        return Array.from(map.values());
+      });
       setLoading(false);
     }
   };
 
   fetchPokemon();
 }, [user]);
+
+useEffect(() => {
+    if (userPokemon.length === 0) return;
+
+    const loadMedia = async () => {
+      const updated = await Promise.all(
+        userPokemon.map(async (p) => {
+          // Skip if already loaded
+          if (p.sprite && p.cry) return p;
+
+          const { sprite, cry } = await getPokemonData(p.species);
+
+          return { ...p, sprite, cry };
+        })
+      );
+
+      setUserPokemon(updated);
+    };
+
+    loadMedia();
+  }, [userPokemon.length]);
 
 
   useEffect(() => {
@@ -83,8 +114,22 @@ export default function App() {
           setUserPokemon(prev => {
             const exists = prev.find(p => p.id === newPokemon.id);
             if (exists) {
-              return prev.map(p => (p.id === newPokemon.id ? newPokemon : p));
+              return prev.map(p =>
+                p.id === newPokemon.id
+                  ? { ...p, ...newPokemon } // keep sprite/cry
+                  : p
+              );
             }
+
+            // 🔹 New Pokémon → fetch its media
+            getPokemonData(newPokemon.species).then(({ sprite, cry }) => {
+              setUserPokemon(current =>
+                current.map(p =>
+                  p.id === newPokemon.id ? { ...p, sprite, cry } : p
+                )
+              );
+            });
+
             return [...prev, newPokemon];
           });
         }
