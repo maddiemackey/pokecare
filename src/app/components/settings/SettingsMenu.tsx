@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings } from "lucide-react";
+import { Settings, Volume2, VolumeOff } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import LogoutButton from "../authentification/LogoutButton";
 import './SettingsMenu.css';
@@ -7,9 +7,17 @@ import './SettingsMenu.css';
 export default function SettingsMenu({
   user,
   onLogout,
+  volume,
+  setVolume,
+  muted,
+  setMuted,
 }: {
   user: User;
   onLogout: () => void;
+  volume: number;
+  setVolume: (volume: number) => void;
+  muted: boolean;
+  setMuted: (muted: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [renderMenu, setRenderMenu] = useState(false);
@@ -79,8 +87,19 @@ export default function SettingsMenu({
             zIndex: 100,
           }}
         >
-        <p style={{ marginBottom: "0.6em" }}>Logged in as {user.user_metadata.display_name}</p>
-        <LogoutButton user={user} onLogout={onLogout} />
+          <div className="settings-label"><label>Logged in as {user.user_metadata.display_name}</label></div>
+          <LogoutButton user={user} onLogout={onLogout} />
+          { /* Volume Slider */ }
+          <div className="settings-label"><label className="settings-label" htmlFor="volume-slider">Volume</label></div>
+          <div className="volume-container">
+            <button className="volume-button" onClick={() => setMuted(!muted)}>{muted || volume == 0 ? <VolumeOff/> : <Volume2/>}</button>
+            <input type="range" min="0" max="1" step="0.02" defaultValue="0.5" value={volume} onChange={event => {
+              setVolume(event.target.valueAsNumber);
+              if (event.target.valueAsNumber > 0 && muted) {
+                setMuted(false);
+              }
+            }}/>
+          </div>
         </div>
       )}
     </div>

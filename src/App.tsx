@@ -19,10 +19,29 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [userPokemon, setUserPokemon] = useState<Pokemon[]>([]);
+  const [volume, setVolume] = useState(() => {
+    const saved = localStorage.getItem("volume");
+    return saved ? parseFloat(saved) : 0.5;
+  });
+  const [muted, setMuted] = useState(() => {
+    const saved = localStorage.getItem("muted");
+    return saved ? JSON.parse(saved) : false;
+  });
+  
   const addPokemonToState = (pokemon: Pokemon) => {
     setUserPokemon(prev => [...prev, pokemon]);
   };
   const activePokemon = userPokemon[0] ?? null;
+
+  // Save volume to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("volume", volume.toString());
+  }, [volume]);
+
+  // Save muted to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("muted", JSON.stringify(muted));
+  }, [muted]);
 
   useEffect(() => {
     // Check existing session
@@ -169,7 +188,7 @@ useEffect(() => {
       <Background location="hills" className="background" />
 
       {/* Sprite */}
-      <InteractiveSprite pokemon={activePokemon} />
+      <InteractiveSprite pokemon={activePokemon} volume={volume} muted={muted} />
 
       <div className="content-container">
         {/* Heading container: XP + Settings */}
@@ -184,7 +203,7 @@ useEffect(() => {
               </div>
           </div>
           <div className="settings-wrapper">
-            <SettingsMenu user={user} onLogout={() => setUser(null)} />
+            <SettingsMenu user={user} onLogout={() => setUser(null)} volume={volume} setVolume={setVolume} muted={muted} setMuted={setMuted} />
           </div>
         </div>
 
