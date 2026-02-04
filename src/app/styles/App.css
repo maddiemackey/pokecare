@@ -102,6 +102,12 @@
   pointer-events: none; /* allow clicks only on child elements */
 }
 
+.party-select-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 /* XP bar centered */
 .xp-bar-wrapper {
   margin: 0 auto;
@@ -139,8 +145,7 @@
   left: 0;
   width: 100%;
   display: flex;
-  justify-content: center;
-  padding: 10px 0;
+  padding: 10px;
   z-index: 20;
   pointer-events: auto;
 }

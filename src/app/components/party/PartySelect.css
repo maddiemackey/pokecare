@@ -1,0 +1,20 @@
+.party-pokemon {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.party-pokemon.active {
+    border-color: #FFD700; /* Gold color for active Pokémon */
+}
+
+.party-pokemon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

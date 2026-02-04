@@ -14,6 +14,7 @@ import UserMenu from "./app/components/user/UserMenu";
 import Onboarding from "./app/components/onboarding/Onboarding";
 import InteractiveSprite from "./app/components/sprite/InteractiveSprite";
 import { getPokemonData } from "./app/Pokemon/PokemonAPI";
+import PartySelect from "./app/components/party/PartySelect";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -27,11 +28,11 @@ export default function App() {
     const saved = localStorage.getItem("muted");
     return saved ? JSON.parse(saved) : false;
   });
+  const [activePokemonIndex, setActivePokemonIndex] = useState<number | null>(0);
   
   const addPokemonToState = (pokemon: Pokemon) => {
     setUserPokemon(prev => [...prev, pokemon]);
   };
-  const activePokemon = userPokemon[0] ?? null;
 
   // Save volume to localStorage whenever it changes
   useEffect(() => {
@@ -42,6 +43,11 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("muted", JSON.stringify(muted));
   }, [muted]);
+
+  // Save activePokemon to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("activePokemonIndex", JSON.stringify(activePokemonIndex));
+  }, [activePokemonIndex]);
 
   useEffect(() => {
     // Check existing session
@@ -71,7 +77,6 @@ export default function App() {
       .select("id, nickname, species, current_xp")
       .eq("user_id", user.id)
       .order("created_at", { ascending: true });
-
     if (error) {
       console.error("Error fetching Pokémon:", error);
     } else {
@@ -101,9 +106,9 @@ useEffect(() => {
           // Skip if already loaded
           if (p.sprite && p.cry) return p;
 
-          const { sprite, cry } = await getPokemonData(p.species);
+          const { sprite, smallSprite, cry } = await getPokemonData(p.species);
 
-          return { ...p, sprite, cry };
+          return { ...p, sprite, smallSprite, cry };
         })
       );
 
@@ -188,7 +193,7 @@ useEffect(() => {
       <Background location="hills" className="background" />
 
       {/* Sprite */}
-      <InteractiveSprite pokemon={activePokemon} volume={volume} muted={muted} />
+      <InteractiveSprite pokemon={userPokemon[activePokemonIndex || 0]} volume={volume} muted={muted} />
 
       <div className="content-container">
         {/* Heading container: XP + Settings */}
@@ -197,9 +202,9 @@ useEffect(() => {
             <UserMenu user={user}/>
           </div>
           <div className="xp-bar-wrapper">
-            <XPBar pokemon={activePokemon} />
+            <XPBar pokemon={userPokemon[activePokemonIndex || 0]} />
             <div className="pokemon-nickname">
-              <p>{activePokemon?.nickname}</p>
+              <p>{userPokemon[activePokemonIndex || 0]?.nickname}</p>
               </div>
           </div>
           <div className="settings-wrapper">
@@ -214,6 +219,9 @@ useEffect(() => {
 
         {/* Bottom stats bar */}
         <div className="stats-container">
+          <div className="party-select-container">
+            <PartySelect userPokemon={userPokemon} activePokemonIndex={activePokemonIndex} setActivePokemonIndex={setActivePokemonIndex} />
+          </div>
           {/* <Stats /> */}
         </div>
       </div>
