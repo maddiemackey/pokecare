@@ -7,7 +7,6 @@ export default function InteractiveSprite({ pokemon, volume, muted }: { pokemon:
   const [jiggling, setJiggling] = useState(false);
   const spriteHeight = pokemon?.height ? Math.max(Math.min(pokemon.height * 3, 500), 150) : 200;
   const spriteWidth = spriteHeight;
-  console.log("Rendering InteractiveSprite with height:", spriteHeight);
 
   const playCry = async () => {
     if (!pokemon?.species) return;
