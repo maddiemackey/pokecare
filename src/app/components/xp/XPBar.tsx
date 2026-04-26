@@ -15,6 +15,7 @@ export default function XPBar({ pokemon }: { pokemon: Pokemon | null }) {
   const getXPIntoLevel = (xp: number) => {
     let level = 1;
     while (xp >= xpForNextLevel(level)) {
+      xp -= xpForNextLevel(level);
       level++;
     }
     return { level, xpIntoLevel: xp, xpNeeded: xpForNextLevel(level) };
