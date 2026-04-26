@@ -23,8 +23,6 @@ export default function InteractiveSprite({ pokemon, volume, muted }: { pokemon:
 
     // Automatically stop jiggle after 1.2s (or match to your animation duration)
     setTimeout(() => setJiggling(false), 1200);
-
-    console.log(`${pokemon?.height}`);
   };
 
   return (
