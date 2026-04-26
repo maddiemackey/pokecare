@@ -4,14 +4,16 @@ import { CornerDownLeft } from 'lucide-react';
 import type { Todo } from '../../types/Todo';
 import { supabase } from "../../../supabase/supabaseClient";
 import type { User } from "@supabase/supabase-js";
+import type { Pokemon } from '../../types/Pokemon';
 
 type ToDoProps = {
   user: User;
+  activePokemon: Pokemon;
   todoItems: Todo[];
   setTodoItems: React.Dispatch<React.SetStateAction<Todo[]>>;
 };
 
-export default function ToDo({ user, todoItems, setTodoItems }: ToDoProps) {
+export default function ToDo({ user, activePokemon, todoItems, setTodoItems }: ToDoProps) {
   const [todoNew, setTodoNew] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -47,7 +49,24 @@ export default function ToDo({ user, todoItems, setTodoItems }: ToDoProps) {
     // Compute the new completed value
     const newCompleted = !currentItem.completed;
 
-    // Update in database first
+    // If task is completed, add XP to the active Pokémon
+    if (newCompleted) {
+      const xpGain = 10;
+      const { error } = await supabase
+        .from("user_pokemon")
+        .update({ current_xp: activePokemon.current_xp + xpGain })
+        .eq("id", activePokemon.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error updating Pokémon XP:", error);
+      } else {
+        activePokemon.current_xp = activePokemon.current_xp + xpGain;
+      }
+    }
+
+    // Update todo in database
     const { error } = await supabase
       .from("todo")
       .update({ completed: newCompleted, completed_at: newCompleted ? new Date().toISOString() : null })

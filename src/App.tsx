@@ -217,7 +217,7 @@ useEffect(() => {
 
         {/* Middle content: ToDoList on right */}
         <div className="todo-wrapper">
-          <ToDo user={user} todoItems={todoItems} setTodoItems={setTodoItems}/>
+          <ToDo user={user} activePokemon={userPokemon[activePokemonIndex || 0]} todoItems={todoItems} setTodoItems={setTodoItems}/>
         </div>
 
         {/* Bottom stats bar */}
