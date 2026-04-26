@@ -36,7 +36,7 @@ export async function getPokemonData(speciesName: string): Promise<Pokemon> {
 
     return {
       sprite: animatedSprite ?? defaultSprite ?? null,
-      smallSprite: smallSprite ?? null,
+      smallSprite: smallSprite ?? defaultSprite ?? null,
       cry: cryLatest ?? cryLegacy ?? null,
     };
   } catch (err) {

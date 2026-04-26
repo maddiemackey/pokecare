@@ -6,6 +6,7 @@ import UserAuthentification from "./app/components/authentification/userAuthenti
 import type { Session, User } from "@supabase/supabase-js";
 
 import type { Pokemon } from "./app/types/Pokemon";
+import type { Todo } from "./app/types/Todo";
 
 import Background from "./app/components/background";
 import SettingsMenu from "./app/components/settings/SettingsMenu";
@@ -15,11 +16,13 @@ import Onboarding from "./app/components/onboarding/Onboarding";
 import InteractiveSprite from "./app/components/sprite/InteractiveSprite";
 import { getPokemonData } from "./app/Pokemon/PokemonAPI";
 import PartySelect from "./app/components/party/PartySelect";
+import ToDo from "./app/components/todo/ToDo";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [userPokemon, setUserPokemon] = useState<Pokemon[]>([]);
+  const [todoItems, setTodoItems] = useState<Todo[]>([]);
   const [volume, setVolume] = useState(() => {
     const saved = localStorage.getItem("volume");
     return saved ? parseFloat(saved) : 0.5;
@@ -29,7 +32,7 @@ export default function App() {
     return saved ? JSON.parse(saved) : false;
   });
   const [activePokemonIndex, setActivePokemonIndex] = useState<number | null>(0);
-  
+
   const addPokemonToState = (pokemon: Pokemon) => {
     setUserPokemon(prev => [...prev, pokemon]);
   };
@@ -164,7 +167,7 @@ useEffect(() => {
       supabase.removeChannel(channel);
     };
   }, [user]);
-  
+
   if (!user) return (
     <div className="app-container">
       <UserAuthentification onLogin={setUser} />
@@ -214,7 +217,7 @@ useEffect(() => {
 
         {/* Middle content: ToDoList on right */}
         <div className="todo-wrapper">
-          {/* <ToDoList /> */}
+          <ToDo user={user} todoItems={todoItems} setTodoItems={setTodoItems}/>
         </div>
 
         {/* Bottom stats bar */}

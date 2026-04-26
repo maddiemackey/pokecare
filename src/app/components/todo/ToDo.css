@@ -1,0 +1,45 @@
+.todo-component {
+    padding: 1em;
+    text-align: center;
+}
+
+.todo-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-checkbox {
+    margin-right: 0.2em;
+    height: 1.4em;
+    width: 1.4em;
+}
+
+.todo-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.todo-new {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 1rem;
+  gap: 0.5rem;
+}
+
+.todo-new-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.todo-text {
+    font-size: 0.7em;
+}
+
+.todo-item.completed .todo-text {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
