@@ -207,7 +207,9 @@ useEffect(() => {
           <div className="xp-bar-wrapper">
             <XPBar pokemon={userPokemon[activePokemonIndex || 0]} />
             <div className="pokemon-nickname">
-              <p>{userPokemon[activePokemonIndex || 0]?.nickname}</p>
+              <p>{userPokemon[activePokemonIndex || 0]?.nickname ?
+              userPokemon[activePokemonIndex || 0]?.nickname :
+              userPokemon[activePokemonIndex || 0]?.species.charAt(0).toUpperCase() + userPokemon[activePokemonIndex || 0]?.species.slice(1) }</p>
               </div>
           </div>
           <div className="settings-wrapper">

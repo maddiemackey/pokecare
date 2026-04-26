@@ -54,6 +54,7 @@ export default function ToDo({ user, activePokemon, todoItems, setTodoItems }: T
     if (newCompleted) {
       const xpGain = 10;
       // If they level up and evolve, update pokemon
+      // TODO: Handle more complex evolutions
       const newXP = activePokemon.current_xp + xpGain;
       let updateSpecies = activePokemon.species;
       const { level } = getXPIntoLevel(newXP);

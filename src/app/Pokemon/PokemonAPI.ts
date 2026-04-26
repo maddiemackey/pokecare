@@ -62,8 +62,6 @@ export async function getPokemonData(speciesName: string): Promise<Pokemon> {
 
     const evolution = await getEvolutionInfo(speciesName);
 
-    console.log(`Evolution info for ${speciesName}:`, evolution);
-
     return {
       sprite: animatedSprite ?? defaultSprite ?? null,
       smallSprite: smallSprite ?? defaultSprite ?? null,
