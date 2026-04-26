@@ -2,11 +2,12 @@ export type Pokemon = {
   sprite: string | null;
   smallSprite: string | null;
   cry: string | null;
+  height: number | null;
 };
 
 export async function getPokemonData(speciesName: string): Promise<Pokemon> {
   if (!speciesName) {
-    return { sprite: null, smallSprite: null,cry: null };
+    return { sprite: null, smallSprite: null,cry: null, height: null };
   }
 
   try {
@@ -27,20 +28,24 @@ export async function getPokemonData(speciesName: string): Promise<Pokemon> {
 
     const defaultSprite = data.sprites?.front_default;
 
-    // Pokemon Thumbnail 
+    // Pokemon Thumbnail
     const smallSprite = data.sprites?.versions?.["generation-vii"]?.["icons"]?.front_default;
 
     // 🔊 Cry URLs from PokeAPI cries repo
     const cryLatest: string | undefined = data.cries?.latest;
     const cryLegacy: string | undefined = data.cries?.legacy;
 
+    // Height
+    const height = Math.round(data.height * 10); // Convert to cm
+
     return {
       sprite: animatedSprite ?? defaultSprite ?? null,
       smallSprite: smallSprite ?? defaultSprite ?? null,
       cry: cryLatest ?? cryLegacy ?? null,
+      height: height ?? null,
     };
   } catch (err) {
     console.debug("Failed to fetch Pokémon media:", speciesName, err);
-    return { sprite: null, smallSprite: null, cry: null };
+    return { sprite: null, smallSprite: null, cry: null, height: null };
   }
 }

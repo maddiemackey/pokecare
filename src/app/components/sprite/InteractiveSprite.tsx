@@ -5,6 +5,9 @@ import './Sprite.css';
 
 export default function InteractiveSprite({ pokemon, volume, muted }: { pokemon: Pokemon | null; volume: number; muted: boolean }) {
   const [jiggling, setJiggling] = useState(false);
+  const spriteHeight = pokemon?.height ? Math.max(Math.min(pokemon.height * 3, 500), 150) : 200;
+  const spriteWidth = spriteHeight;
+  console.log("Rendering InteractiveSprite with height:", spriteHeight);
 
   const playCry = async () => {
     if (!pokemon?.species) return;
@@ -21,6 +24,8 @@ export default function InteractiveSprite({ pokemon, volume, muted }: { pokemon:
 
     // Automatically stop jiggle after 1.2s (or match to your animation duration)
     setTimeout(() => setJiggling(false), 1200);
+
+    console.log(`${pokemon?.height}`);
   };
 
   return (
@@ -30,7 +35,7 @@ export default function InteractiveSprite({ pokemon, volume, muted }: { pokemon:
     >
       <PokemonSprite
         name={pokemon?.species}
-        style={{ width: 150, height: 150, imageRendering: "pixelated" }}
+        style={{ width: spriteWidth, height: spriteHeight, imageRendering: "pixelated" }}
       />
     </div>
   );

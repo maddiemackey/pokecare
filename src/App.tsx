@@ -109,9 +109,9 @@ useEffect(() => {
           // Skip if already loaded
           if (p.sprite && p.cry) return p;
 
-          const { sprite, smallSprite, cry } = await getPokemonData(p.species);
+          const { sprite, smallSprite, cry, height } = await getPokemonData(p.species);
 
-          return { ...p, sprite, smallSprite, cry };
+          return { ...p, sprite, smallSprite, cry, height };
         })
       );
 

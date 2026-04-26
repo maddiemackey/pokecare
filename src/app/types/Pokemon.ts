@@ -6,4 +6,5 @@ export type Pokemon = {
   sprite?: string | null;
   smallSprite?: string | null;
   cry?: string | null;
+  height?: number | null;
 };
