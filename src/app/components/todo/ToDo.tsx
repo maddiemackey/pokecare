@@ -56,7 +56,7 @@ export default function ToDo({ user, activePokemon, todoItems, setTodoItems }: T
       // If they level up and evolve, update pokemon
       const newXP = activePokemon.current_xp + xpGain;
       let updateSpecies = activePokemon.species;
-      const { level, xpIntoLevel, xpNeeded } = getXPIntoLevel(newXP);
+      const { level } = getXPIntoLevel(newXP);
       const evolutionLevel = activePokemon.evolution?.[0].details[0].minLevel
       if (evolutionLevel && level >= evolutionLevel) {
         updateSpecies = activePokemon.evolution?.[0]?.speciesName || updateSpecies;
@@ -73,6 +73,8 @@ export default function ToDo({ user, activePokemon, todoItems, setTodoItems }: T
         console.error("Error updating Pokémon XP:", error);
       } else {
         activePokemon.current_xp = newXP;
+        activePokemon.species = updateSpecies;
+        // TODO: Update sprite URL too
       }
     }
 
