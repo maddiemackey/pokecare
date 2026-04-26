@@ -1,3 +1,5 @@
+import type { EvolutionOption } from "../Pokemon/PokemonAPI";
+
 export type Pokemon = {
   id: string;
   nickname: string;
@@ -7,4 +9,5 @@ export type Pokemon = {
   smallSprite?: string | null;
   cry?: string | null;
   height?: number | null;
+  evolution?: EvolutionOption[] | null;
 };

@@ -5,6 +5,7 @@ import type { Todo } from '../../types/Todo';
 import { supabase } from "../../../supabase/supabaseClient";
 import type { User } from "@supabase/supabase-js";
 import type { Pokemon } from '../../types/Pokemon';
+import { getXPIntoLevel } from '../xp/XP';
 
 type ToDoProps = {
   user: User;
@@ -52,9 +53,18 @@ export default function ToDo({ user, activePokemon, todoItems, setTodoItems }: T
     // If task is completed, add XP to the active Pokémon
     if (newCompleted) {
       const xpGain = 10;
+      // If they level up and evolve, update pokemon
+      const newXP = activePokemon.current_xp + xpGain;
+      let updateSpecies = activePokemon.species;
+      const { level, xpIntoLevel, xpNeeded } = getXPIntoLevel(newXP);
+      const evolutionLevel = activePokemon.evolution?.[0].details[0].minLevel
+      if (evolutionLevel && level >= evolutionLevel) {
+        updateSpecies = activePokemon.evolution?.[0]?.speciesName || updateSpecies;
+      }
+
       const { error } = await supabase
         .from("user_pokemon")
-        .update({ current_xp: activePokemon.current_xp + xpGain })
+        .update({ current_xp: newXP, species: updateSpecies })
         .eq("id", activePokemon.id)
         .select()
         .single();
@@ -62,7 +72,7 @@ export default function ToDo({ user, activePokemon, todoItems, setTodoItems }: T
       if (error) {
         console.error("Error updating Pokémon XP:", error);
       } else {
-        activePokemon.current_xp = activePokemon.current_xp + xpGain;
+        activePokemon.current_xp = newXP;
       }
     }
 
